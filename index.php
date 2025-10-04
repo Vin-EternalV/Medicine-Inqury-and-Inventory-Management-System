@@ -1,87 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medical Inquary and Inventory System</title>
-    <link rel="stylesheet" href="design.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PharmaSys</title>
+  <link rel="stylesheet" href="design.css">
 </head>
 <body>
-    
-    
+  <header>
+    <div class="logo">
+      <div class="logo-icon"></div>
+      <span>PharmaSys</span>
+    </div>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#">About</a>
+      <a href="#">Contact</a>
+    </nav>
+    <div class="search-container">
+      <input type="text" placeholder="Search...">
+    </div>
+    <button class="primary-button">Sign in</button>
+  </header>
 
+  <aside class="sidebar">
+    <div class="icon"></div>
+    <div class="icon"></div>
+    <div class="icon"></div>
+    <div class="icon"></div>
+  </aside>
 
+  <main>
+    <h1>PharmaSys<span class="reg-symbol">®</span></h1>
+  </main>
 
-           <nav>
-
-            <div class="logo">
-
-                 <h1 id="title">Pharmasyst</h1>
-
-                 <img src="assets/image/heart-png-38780.png" alt="">
-
-            </div>
-            
-
-            <ul>
-
-                <li><a href="">Home</a></li>
-                <li><a href="">About</a></li>
-                <li><a href="">Contact</a></li>
-
-            </ul>
-
-
-            <div class="search-bar">
-
-                <input type="text" placeholder="Search...">
-                <button type="submit">Go</button>
-
-            </div>
-
-            <div class="sign-in">
-
-                <button type="submit">Sign In</button>
-
-            </div>
-
-
-           </nav>
-
-
-
-           <div class="home">
-
-
-                <div class="left-text">
-                    <h1>Welcome to Pharmasyst</h1>
-                    <p>Medical Inquary and Inventory System</p>
-                   
-                </div>
-
-               
-
-                <div class="right-image">
-                    <img src="assets/image/doctors.png" alt="">
-
-
-                     </div>
-
-           </div>
-
-
-         <div class="homepage">
-
-           <h2>this is homepage</h2>
-          </div>
-
-
-
+  <footer>
+    <div class="navigator">
+      <select>
+        <option>Public</option>
+        <option>Reports</option>
+      </select>
+      <select>
+        <option>Option</option>
+        <option>Legal</option>
+      </select>
+    </div>
+    <div class="footer-branding">
+      <div class="logo-icon small"></div>
+      <span>Powered by PharmaSys</span>
+    </div>
+  </footer>
 </body>
-
- 
-        
 </html>
+
 
 <?php
 
