@@ -10,9 +10,18 @@
     
     
 
+
+
            <nav>
 
-             <h1 id="title">MIIS</h1>
+            <div class="logo">
+
+                 <h1 id="title">Pharmasyst</h1>
+
+                 <img src="assets/image/heart-png-38780.png" alt="">
+
+            </div>
+            
 
             <ul>
 
@@ -23,6 +32,20 @@
             </ul>
 
 
+            <div class="search-bar">
+
+                <input type="text" placeholder="Search...">
+                <button type="submit">Go</button>
+
+            </div>
+
+            <div class="sign-in">
+
+                <button type="submit">Sign In</button>
+
+            </div>
+
+
            </nav>
 
 
@@ -31,21 +54,33 @@
 
 
                 <div class="left-text">
-                    <h1>Welcome to MIIS</h1>
+                    <h1>Welcome to Pharmasyst</h1>
                     <p>Medical Inquary and Inventory System</p>
                    
                 </div>
 
                
 
+                <div class="right-image">
+                    <img src="assets/image/doctors.png" alt="">
 
 
+                     </div>
 
            </div>
 
 
+         <div class="homepage">
+
+           <h2>this is homepage</h2>
+          </div>
+
+
 
 </body>
+
+ 
+        
 </html>
 
 <?php
