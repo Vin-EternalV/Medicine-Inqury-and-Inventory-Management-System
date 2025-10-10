@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,25 +11,11 @@
 
 </head>
 <body>
-  <header >
-    <div class="logo">
-      <div class="logo-icon"></div>
-      <span>PharmaSys</span>
-    </div>
-    <nav>
-      <a href="#home">Home</a>
-      <a href="#about">About</a>
-      <a href="#contact">Contact</a>
-    </nav>
-    <div class="search-container">
-      <input type="text" placeholder="Search...">
-      <button class="search-button">search</button>
-    </div>
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#signInModal">
- Log in
-</button>
+  <?php
+include("assets/css/header.php");
+?>
 
-  </header>
+
 
   <aside class="sidebar">
     <div class="icon"></div>
@@ -42,74 +29,6 @@
   </main>
 
 
-
-<!-- Log In Modal -->
-<div class="modal fade" id="signInModal" tabindex="-1" aria-labelledby="signInModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-    
-      <div class="modal-header">
-        <h5 class="modal-title" id="signInModalLabel">Log In</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      
-      <div class="modal-body">
-        <form>
-          <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
-            <input type="text" class="form-control" id="username" placeholder="Enter username" required>
-          </div>
-          
-          <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" id="password" placeholder="Enter password" required>
-          </div>
-          
-          <button type="submit" class="btn btn-primary w-100">Sign In</button>
-        </form>
-        <div class="text-center mt-3">
-          <small>Don't have an account? 
-                <a href="#" data-bs-toggle="modal" data-bs-target="#signUpModal" data-bs-dismiss="modal">
-                Sign up
-                </a>
-          </small>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
-<!-- Sign In Modal -->
-<div class="modal fade" id="signUpModal" tabindex="-1" aria-labelledby="signInModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-    
-      <div class="modal-header">
-        <h5 class="modal-title" id="signInModalLabel">Sign In</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      
-      <div class="modal-body">
-        <form>
-          <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
-            <input type="text" class="form-control" id="username" placeholder="Create new username" required>
-          </div>
-          
-          <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" id="password" placeholder="Create new password" required>
-          </div>
-          
-          <button type="submit" class="btn btn-primary w-100">Sign In</button>
-        </form>
-      </div>
-      
-    </div>
-  </div>
-</div>
 
 
  
@@ -128,7 +47,13 @@
           <p class="card-text">Fast-acting paracetamol tablets for headache, fever, and minor pain relief..</p>
         </div>
         <div class="card-footer bg-transparent border-0">
-          <button class="btn btn-success w-100" data-bs-toggle="modal" data-bs-target="#signInModal">Add to Cart</button>
+            <?php if (isset($_SESSION['user_id'])): ?>
+            <!-- User logged in: go to order submission page -->
+            <a href="cart.php" class="btn btn-success w-100 text-center">Add to Cart</a>
+          <?php else: ?>
+            <!-- User NOT logged in: redirect to login page -->
+            <a href="login.php" class="btn btn-success w-100 text-center">Add to Cart</a>
+          <?php endif; ?>
         </div>
       </div>
     </div>
@@ -142,7 +67,13 @@
           <p class="card-text">Broad-spectrum antibiotic for respiratory and bacterial infections. Prescription required.</p>
         </div>
         <div class="card-footer bg-transparent border-0">
-          <button class="btn btn-success w-100" data-bs-toggle="modal" data-bs-target="#signInModal">Add to Cart</button>
+           <?php if (isset($_SESSION['user_id'])): ?>
+            <!-- User logged in: go to order submission page -->
+            <a href="cart.php" class="btn btn-success w-100 text-center">Add to Cart</a>
+          <?php else: ?>
+            <!-- User NOT logged in: redirect to login page -->
+            <a href="login.php" class="btn btn-success w-100 text-center">Add to Cart</a>
+          <?php endif; ?>
         </div>
       </div>
     </div>
@@ -156,7 +87,13 @@
           <p class="card-text">Maintains healthy blood pressure and supports cardiovascular health. Prescribed only.</p>
         </div>
         <div class="card-footer bg-transparent border-0">
-          <button class="btn btn-success w-100" data-bs-toggle="modal" data-bs-target="#signInModal">Add to Cart</button>
+            <?php if (isset($_SESSION['user_id'])): ?>
+            <!-- User logged in: go to order submission page -->
+            <a href="cart.php" class="btn btn-success w-100 text-center">Add to Cart</a>
+          <?php else: ?>
+            <!-- User NOT logged in: redirect to login page -->
+            <a href="login.php" class="btn btn-success w-100 text-center">Add to Cart</a>
+          <?php endif; ?>
         </div>
       </div>
     </div>
