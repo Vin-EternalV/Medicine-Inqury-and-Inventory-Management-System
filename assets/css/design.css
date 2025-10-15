@@ -1,0 +1,252 @@
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+
+
+html {
+  scroll-behavior: smooth;
+}
+
+
+body {
+  background: #f8f9fc;
+  color: #333;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Header */
+header {
+  display: flex;
+  align-items: center;
+  position: fixed;
+  width: 100%;
+  z-index:5;
+  justify-content: space-between;
+  padding: 20px 40px;
+  background: white;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1877f2;
+}
+
+.logo-icon {
+  width: 20px;
+  height: 20px;
+  background-color: #1877f2;
+  margin-right: 10px;
+  border-radius: 4px;
+}
+
+nav a {
+  margin: 0 10px;
+  color: #555;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+nav a:hover {
+  color: #1877f2;
+}
+
+.search-container {
+  position: relative;
+ 
+}
+
+.search-container input {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+
+.search-button  {
+  position: absolute;
+  right: 0;
+  padding: 5px 10px;
+  background-color: #1877f2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+
+.primary-button {
+  background-color: #1877f2;
+  text-decoration: none !important;
+  border: none;
+  color: white !important;
+  padding: 5px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-block;
+}
+
+#logout {
+  background-color: #1877f2;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+}
+
+#logout:hover {
+  background-color: #155ab2;
+}
+
+#profile {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+
+}
+
+#profile:hover {
+  color: #1877f2;
+}
+
+
+
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  left: 20px;
+  top: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sidebar .icon {
+  width: 25px;
+  height: 25px;
+  background-color: transparent;
+  border-radius: 6px;
+}
+
+/* Main Branding */
+main {
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+main h1 {
+  font-size: 4rem;
+  color: #1877f2;
+}
+
+.reg-symbol {
+  font-size: 1rem;
+  vertical-align: super;
+}
+
+/* Footer */
+footer {
+  position: absolute;
+  bottom: 20px;
+  left: 40px;
+  right: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navigator select {
+  margin-right: 20px;
+  padding: 5px;
+  border-radius: 6px;
+}
+
+.footer-branding {
+  display: flex;
+  align-items: center;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.footer-branding .logo-icon.small {
+  width: 12px;
+  height: 12px;
+  background-color: #1877f2;
+  margin-right: 8px;
+}
+
+/* Gradient background shape */
+body::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 300px;
+  height: 200px;
+  background: radial-gradient(circle at bottom right, #9f70ff 0%, #ffffff 80%);
+  border-top-left-radius: 50% 50%;
+  z-index: -1;
+}
+
+#signInModalLabel {
+    color: blue;
+  font-weight: bold;
+}
+
+
+.card-img-top {
+  height: 200px;
+  object-fit: cover;
+  border-top-left-radius: 0.375rem;
+  border-top-right-radius: 0.375rem;
+}
+
+#Order {
+ border: 1px solid black;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 50px;
+}
+
+#Order h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-weight: bold;
+  color: blue;
+}
+
+
+.about-section {
+  background-color: #ffffff;
+  border-radius: 12px;
+  border: 1px solid black;
+  padding: 40px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.about-section h2 {
+  font-weight: 700;
+  color: #1877f2;
+}
+
+.about-section p {
+  color: #555;
+  line-height: 1.6;
+}
+
+
+/* Profile page */

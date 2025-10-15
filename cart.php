@@ -1,101 +1,143 @@
 <?php
 session_start();
-include 'db_connect.php'; // Your DB connection file
+include 'db.php';  // Now uses MySQLi connection ($conn)
 
+// Redirect if not logged in
 if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit();
+    header('Location: login.php');
+    exit;
 }
 
-$user_id = $_SESSION['user_id'];
+// Handle adding to cart (from index.php ?id=)
+if (isset($_GET['id']) && is_numeric($_GET['id'])) {
+    $product_id = (int)$_GET['id'];
+    $stmt = $conn->prepare("SELECT * FROM product WHERE Product_id = ? AND stck_qty > 0");
+    $stmt->bind_param("i", $product_id);  // "i" means the parameter is an integer
+    $stmt->execute();
+    $result = $stmt->get_result();  // Get the result set
+    $product = $result->fetch_assoc();  // Fetch as associative array
+    
+    if ($product) {
+        if (!isset($_SESSION['cart'])) {
+            $_SESSION['cart'] = [];
+        }
+        if (isset($_SESSION['cart'][$product_id])) {
+            $_SESSION['cart'][$product_id]['quantity'] += 1;
+        } else {
+            $_SESSION['cart'][$product_id] = [
+                'name' => $product['Product_name'],
+                'price' => $product['price'],
+                'quantity' => 1
+            ];
+        }
+        $message = 'Item added to cart!';
+    } else {
+        $message = 'Product not available.';
+    }
+}
 
-// Fetch cart items for the logged-in user
-$sql = "SELECT c.id as cart_id, p.name, p.description, p.image, p.price, c.quantity 
-        FROM cart c 
-        JOIN products p ON c.product_id = p.id 
-        WHERE c.user_id = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
-$result = $stmt->get_result();
+// Handle updates/removals
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (isset($_POST['update'])) {
+        foreach ($_POST['quantity'] as $id => $qty) {
+            if ($qty > 0 && isset($_SESSION['cart'][$id])) {
+                $_SESSION['cart'][$id]['quantity'] = (int)$qty;
+            } else {
+                unset($_SESSION['cart'][$id]);
+            }
+        }
+        $message = 'Cart updated!';
+    } elseif (isset($_POST['remove_id'])) {
+        $remove_id = (int)$_POST['remove_id'];
+        unset($_SESSION['cart'][$remove_id]);
+        $message = 'Item removed!';
+    }
+}
 
-$cart_items = [];
-while ($row = $result->fetch_assoc()) {
-    $cart_items[] = $row;
+// Calculate totals
+$cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
+$total_items = array_sum(array_column($cart, 'quantity'));
+$total_price = 0;
+foreach ($cart as $item) {
+    $total_price += $item['price'] * $item['quantity'];
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <title>Your Cart</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart - PharmaSys</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/design.css">
     <style>
-        .cart-card img {
-            height: 180px;
-            object-fit: contain;
-        }
-        .quantity-input {
-            width: 70px;
-        }
-        .submit-btn {
-            max-width: 300px;
-            margin-top: 20px;
-        }
+        .cart-table { margin-top: 20px; }
+        .cart-table img { width: 50px; height: 50px; object-fit: cover; }
     </style>
 </head>
 <body>
-<div class="container my-5">
-    <h2 class="mb-4">Your Cart</h2>
+    <header class="text-center py-3">
+        <a href="index.php" style="text-decoration: none; font-size: 2rem; font-weight: bold;">PharmaSys</a>
+    </header>
 
-    <?php if (empty($cart_items)): ?>
-        <div class="alert alert-info">
-            Your cart is empty. <a href="products.php">Start shopping!</a>
-        </div>
-    <?php else: ?>
-        <form action="submit_order.php" method="POST">
-            <div class="row g-4">
-                <?php
-                $total = 0;
-                foreach ($cart_items as $item):
-                    $subtotal = $item['price'] * $item['quantity'];
-                    $total += $subtotal;
-                ?>
-                <div class="col-md-4">
-                    <div class="card cart-card h-100 shadow-sm">
-                        <img src="<?= htmlspecialchars($item['image']) ?>" class="card-img-top" alt="<?= htmlspecialchars($item['name']) ?>">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title text-primary"><?= htmlspecialchars($item['name']) ?></h5>
-                            <p class="card-text flex-grow-1"><?= htmlspecialchars($item['description']) ?></p>
-                            <p class="card-text"><strong>Price: </strong>$<?= number_format($item['price'], 2) ?></p>
-                            <div class="d-flex align-items-center mb-2">
-                                <label for="quantity_<?= $item['cart_id'] ?>" class="form-label me-2 mb-0">Quantity:</label>
-                                <input
-                                    type="number"
-                                    id="quantity_<?= $item['cart_id'] ?>"
-                                    name="quantities[<?= $item['cart_id'] ?>]"
-                                    value="<?= $item['quantity'] ?>"
-                                    min="1"
-                                    class="form-control quantity-input"
-                                />
-                            </div>
-                            <p class="card-text"><strong>Subtotal: </strong>$<?= number_format($subtotal, 2) ?></p>
-                        </div>
+    <div class="container my-0">
+        <h1 class="text-primary mb-3">Shopping Cart</h1>
+        
+        <?php if (isset($message)): ?>
+            <div class="alert alert-info"><?= htmlspecialchars($message) ?></div>
+        <?php endif; ?>
+
+        <?php if (empty($cart)): ?>
+            <div class="text-center py-4">
+                <p>Your cart is empty. <a href="index.php">Shop now</a>.</p>
+            </div>
+        <?php else: ?>
+            <form method="POST">
+                <table class="table table-striped cart-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($cart as $id => $item): ?>
+                            <tr>
+                                <td>
+                                    <img src="assets/image/<?= htmlspecialchars($item['name']) ?>.jpg" alt="<?= htmlspecialchars($item['name']) ?>" class="me-2">  <!-- Adjust image naming if needed -->
+                                    <?= htmlspecialchars($item['name']) ?>
+                                </td>
+                                <td>$<?= number_format($item['price'], 2) ?></td>
+                                <td>
+                                    <input type="number" name="quantity[<?= $id ?>]" value="<?= $item['quantity'] ?>" min="1" class="form-control w-50 d-inline">
+                                </td>
+                                <td>$<?= number_format($item['price'] * $item['quantity'], 2) ?></td>
+                                <td>
+                                    <button type="submit" name="remove_id" value="<?= $id ?>" class="btn btn-sm btn-danger" onclick="return confirm('Remove?')">Remove</button>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+                
+                <div class="row justify-content-between">
+                    <div class="col-auto">
+                        <button type="submit" name="update" class="btn btn-secondary">Update Cart</button>
+                        <a href="index.php" class="btn btn-primary ms-2">Continue Shopping</a>
+                    </div>
+                    <div class="col-auto">
+                        <h4>Total: <?= $total_items ?> items | $<?= number_format($total_price, 2) ?></h4>
+                        <a href="checkout.php" class="btn btn-success">Checkout</a>  <!-- Placeholder -->
                     </div>
                 </div>
-                <?php endforeach; ?>
-            </div>
+            </form>
+        <?php endif; ?>
+    </div>
 
-            <div class="mt-4 text-end">
-                <h4>Total: $<?= number_format($total, 2) ?></h4>
-                <button type="submit" class="btn btn-success btn-lg submit-btn">Submit Order</button>
-            </div>
-        </form>
-    <?php endif; ?>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

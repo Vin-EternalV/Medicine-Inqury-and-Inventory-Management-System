@@ -8,21 +8,40 @@
   <link rel="stylesheet" href="assets/css/design.css">
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
 
 </head>
 <body>
   <?php
 include("assets/css/header.php");
+include 'db.php'; 
+
+$notif_count = 0;
+if (isset($_SESSION['user_id'])) {
+    $uid = (int)$_SESSION['user_id'];
+    $notif_query = $conn->prepare("SELECT COUNT(*) FROM notifications WHERE user_id = ? AND is_read = 0");
+    $notif_query->bind_param("i", $uid);
+    $notif_query->execute();
+    $notif_query->bind_result($notif_count);
+    $notif_query->fetch();
+    $notif_query->close();
+}
 ?>
 
 
 
-  <aside class="sidebar">
-    <div class="icon"></div>
-    <div class="icon"></div>
-    <div class="icon"></div>
-    <div class="icon"></div>
-  </aside>
+<aside class="sidebar">
+    <div class="icon"><a href="cart.php"><i class="bi bi-cart"></i></a></div>
+    <div class="icon position-relative">
+        <a href="notification.php"><i class="bi bi-bell"></i></a>
+        <?php if ($notif_count > 0): ?>
+            <span class="badge bg-danger position-absolute top-0 start-100 translate-middle">
+                <?= $notif_count ?>
+            </span>
+        <?php endif; ?>
+    </div>
+</aside>
 
   <main id="home">
     <h1>PharmaSys<span class="reg-symbol">®</span></h1>
@@ -38,64 +57,42 @@ include("assets/css/header.php");
     <hr>
   <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
     
-    <!-- Product 1 -->
-    <div class="col">
-      <div class="card h-100 shadow-sm">
-        <img src="assets/image/paracetex.jpg" class="card-img-top" alt="Product Image">
-        <div class="card-body">
-          <h5 class="card-title text-primary">Paracetex 500mg</h5>
-          <p class="card-text">Fast-acting paracetamol tablets for headache, fever, and minor pain relief..</p>
-        </div>
-        <div class="card-footer bg-transparent border-0">
-            <?php if (isset($_SESSION['user_id'])): ?>
-            <!-- User logged in: go to order submission page -->
-            <a href="cart.php" class="btn btn-success w-100 text-center">Add to Cart</a>
-          <?php else: ?>
-            <!-- User NOT logged in: redirect to login page -->
-            <a href="login.php" class="btn btn-success w-100 text-center">Add to Cart</a>
-          <?php endif; ?>
-        </div>
+ 
+   <?php
+$query = "SELECT * FROM product";
+$result = mysqli_query($conn, $query);
+
+if (mysqli_num_rows($result) > 0):
+  while ($row = mysqli_fetch_assoc($result)):
+?>
+  <div class="col">
+    <div class="card h-100 shadow-sm">
+      <!-- You can add an image column to DB later -->
+     <img src="<?= !empty($row['image']) ? 'assets/image/' . htmlspecialchars($row['image']) : 'assets/image/default.png' ?>" class="card-img-top" alt="Product Image">
+
+
+      <div class="card-body">
+        <h5 class="card-title text-primary"><?= htmlspecialchars($row['Product_name']) ?></h5>
+        <p class="card-text"><?= htmlspecialchars($row['description']) ?></p>
+        <p class="card-text">$<?= number_format($row['price'], 2) ?></p>
+      </div>
+      <div class="card-footer bg-transparent border-0">
+        <?php if (isset($_SESSION['user_id'])): ?>
+          <a href="cart.php?id=<?= $row['Product_id'] ?>" class="btn btn-success w-100 text-center">Add to Cart</a>
+        <?php else: ?>
+          <a href="login.php" class="btn btn-success w-100 text-center">Add to Cart</a>
+        <?php endif; ?>
       </div>
     </div>
+  </div>
+<?php
+  endwhile;
+else:
+?>
+  <p>No products available yet.</p>
+<?php endif; ?>
 
-    <!-- Product 2 -->
-    <div class="col">
-      <div class="card h-100 shadow-sm">
-        <img src="assets/image/amoxymed.jpg" class="card-img-top" alt="Product Image">
-        <div class="card-body">
-          <h5 class="card-title text-primary">AmoxyMed 250mg</h5>
-          <p class="card-text">Broad-spectrum antibiotic for respiratory and bacterial infections. Prescription required.</p>
-        </div>
-        <div class="card-footer bg-transparent border-0">
-           <?php if (isset($_SESSION['user_id'])): ?>
-            <!-- User logged in: go to order submission page -->
-            <a href="cart.php" class="btn btn-success w-100 text-center">Add to Cart</a>
-          <?php else: ?>
-            <!-- User NOT logged in: redirect to login page -->
-            <a href="login.php" class="btn btn-success w-100 text-center">Add to Cart</a>
-          <?php endif; ?>
-        </div>
-      </div>
-    </div>
-
-    <!-- Product 3 -->
-    <div class="col">
-      <div class="card h-100 shadow-sm">
-        <img src="assets/image/Cardiocare.png" class="card-img-top" alt="Product Image">
-        <div class="card-body">
-          <h5 class="card-title text-primary">CardioCare 10mg</h5>
-          <p class="card-text">Maintains healthy blood pressure and supports cardiovascular health. Prescribed only.</p>
-        </div>
-        <div class="card-footer bg-transparent border-0">
-            <?php if (isset($_SESSION['user_id'])): ?>
-            <!-- User logged in: go to order submission page -->
-            <a href="cart.php" class="btn btn-success w-100 text-center">Add to Cart</a>
-          <?php else: ?>
-            <!-- User NOT logged in: redirect to login page -->
-            <a href="login.php" class="btn btn-success w-100 text-center">Add to Cart</a>
-          <?php endif; ?>
-        </div>
-      </div>
+    
     </div>
 
    
@@ -111,10 +108,17 @@ include("assets/css/header.php");
     <div class="col-md-6">
       <h2 class="text-primary mb-3">About PharmaSys</h2>
       <p>
-        PharmaSys® is your trusted partner in delivering quality pharmaceutical solutions. We aim to bridge the gap between innovation and healthcare by offering reliable, affordable, and accessible medical products.
+       PharmaSys® is your trusted partner in delivering high-quality pharmaceutical solutions tailored to meet the evolving needs of modern healthcare. We are committed to bridging the gap between
+        innovation and patient care by providing reliable, affordable, and easily
+         accessible medical products to individuals, healthcare providers, and institutions alike.
       </p>
       <p>
-        Our platform is designed with both patients and providers in mind, ensuring seamless access to a wide range of pharmaceutical items — all backed by stringent quality standards and prompt delivery.
+       Founded on the principles of integrity, excellence, and compassion, PharmaSys is more than just a platform — it's a healthcare ecosystem designed with people at its core. Whether you're a patient seeking trusted medication or a
+        healthcare professional in need of dependable supply chains, PharmaSys delivers with precision and care.
+      </p>
+       <p>
+       Our extensive catalog includes a wide range of pharmaceutical items, from everyday over-the-counter remedies to specialized treatments, all rigorously vetted to meet the highest quality and safety standards. We work closely with licensed manufacturers, distributors, and healthcare
+        professionals to ensure that every product we offer is compliant, effective, and ethically sourced.
       </p>
     </div>
     <div class="col-md-6 text-center">
